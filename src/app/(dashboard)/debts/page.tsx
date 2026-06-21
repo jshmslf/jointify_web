@@ -76,7 +76,7 @@ export default function DebtsPage() {
 
   const active = debts.filter(d => d.status === 'active');
   const totalDebt = active.reduce((s, d) => s + Number(d.remainingBalance), 0);
-  const form = editing ? updateForm : createForm;
+  const form = (editing ? updateForm : createForm) as typeof createForm;
 
   return (
     <div className="content-container py-6 space-y-6">

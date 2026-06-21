@@ -26,7 +26,7 @@ const accountSchema = z.object({
   type: z.enum(['bank', 'ewallet', 'cash']),
   ownership: z.enum(['me', 'partner', 'shared']),
   openingBalance: z.coerce.number().min(0),
-  currency: z.string().default('PHP'),
+  currency: z.string(),
 });
 
 const incomeSchema = z.object({

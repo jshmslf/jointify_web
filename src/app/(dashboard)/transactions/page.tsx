@@ -29,7 +29,7 @@ const schema = z.object({
   totalAmount: z.coerce.number().positive(),
   notes: z.string().optional(),
   transactedAt: z.string().optional(),
-  isRecurring: z.boolean().default(false),
+  isRecurring: z.boolean(),
   recurFrequency: z.enum(['daily', 'weekly', 'monthly']).optional(),
   debtId: z.string().optional(),
   goalId: z.string().optional(),
