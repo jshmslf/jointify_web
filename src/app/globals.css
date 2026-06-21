@@ -128,3 +128,9 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  .content-container {
+    @apply w-full max-w-[1290px] mx-auto px-4;
+  }
+}

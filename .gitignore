@@ -20,6 +20,9 @@
 # production
 /build
 
+# amazonq
+.amazonq/
+
 # misc
 .DS_Store
 *.pem

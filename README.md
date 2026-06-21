@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Jointify Web
+
+Financial clarity for couples — a Next.js web app.
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4 + shadcn/ui (radix-nova)
+- **Icons**: lucide-react
+- **Data fetching**: TanStack Query v5
+- **HTTP client**: Axios
+- **Auth**: Cookie-based JWT (`js-cookie`)
+- **Theme**: next-themes (dark by default)
+- **Forms**: react-hook-form + zod
+
+## How It Works
+
+### Routing
+
+The app uses Next.js route groups to separate concerns:
+
+```
+/                   → redirects to /login
+/(auth)
+  /login
+  /register
+  /forgot-password
+/(dashboard)
+  /dashboard
+```
+
+### Auth Flow
+
+1. On login, a JWT token is stored in a cookie (7-day expiry).
+2. `AuthProvider` reads the cookie on mount, calls `/me` to hydrate the user, and exposes `user`, `loading`, `logout`, and `setUser` via context.
+3. On any `401` response, Axios automatically clears the cookie and redirects to `/login`.
+
+### Providers
+
+Wrapped in `RootLayout` in this order:
+
+```
+ThemeProvider → QueryProvider → AuthProvider → page
+```
+
+- `ThemeProvider` — manages dark/light mode via the `dark` class on `<html>`
+- `QueryProvider` — TanStack Query client (5 min stale time, 1 retry)
+- `AuthProvider` — global user session state
+
+### Theme
+
+Default is **dark mode**. System preference is ignored (`enableSystem={false}`).  
+To toggle theme in any client component:
+
+```ts
+import { useTheme } from 'next-themes';
+
+const { setTheme } = useTheme();
+setTheme('light'); // or 'dark'
+```
+
+### API Client
+
+`src/lib/api.ts` exports a pre-configured Axios instance that:
+- Sets `baseURL` from `NEXT_PUBLIC_API_URL`
+- Attaches `Authorization: Bearer <token>` on every request
+- Redirects to `/login` on `401`
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- pnpm
+
+### Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Install dependencies
+pnpm install
+
+# Copy env file and fill in values
+cp .env.local.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | Base URL of the backend API |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Running
 
-## Learn More
+```bash
+# Development
+pnpm dev
 
-To learn more about Next.js, take a look at the following resources:
+# Production build
+pnpm build
+pnpm start
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Lint
+pnpm lint
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
